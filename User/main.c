@@ -1,15 +1,24 @@
 #include "stm32f10x.h"
-
+#include "MyTime.h"
+#include "MyOLED.h"
+#include "MyOLED_Render.h"
+#include "frame.h"
+#include "Page.h"
+#include "Keyboard.h"
 
 int main(void)
 {
+    // 模块初始化
+    MyOLED_Init();
+    MyOLED_Clear_GRAM();
+    MyOLED_Flip();
+    MyTime_Init();
+    Keyboard_Init();
 
     while (1)
     {
-        // 硬件层：检测硬件输入
-
-        // 逻辑层：处理硬件输入
-
-        // 交互层：修改屏幕输出反馈
+        CheckHardware(current_page);    // 检查硬件输入
+        Frame_Tick();    // 执行帧函数
+        current_page->PageRender();    // 渲染屏幕
     }
 }

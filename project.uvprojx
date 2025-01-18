@@ -10,6 +10,7 @@
       <TargetName>Target 1</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
+      <pArmCC>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pArmCC>
       <pCCUsed>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
@@ -340,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Start;.\Hardware;.\User;.\Library;.\System</IncludePath>
+              <IncludePath>.\Start;.\Hardware;.\User;.\Library;.\Software</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -653,9 +654,103 @@
         </Group>
         <Group>
           <GroupName>Software</GroupName>
+          <Files>
+            <File>
+              <FileName>MyTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Software\MyTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyTime.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Software\MyTime.h</FilePath>
+            </File>
+            <File>
+              <FileName>MyMisc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Software\MyMisc.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyMisc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Software\MyMisc.h</FilePath>
+            </File>
+            <File>
+              <FileName>Page.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Software\Page.c</FilePath>
+            </File>
+            <File>
+              <FileName>Page.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Software\Page.h</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>Hardware</GroupName>
+          <Files>
+            <File>
+              <FileName>frame.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\frame.c</FilePath>
+            </File>
+            <File>
+              <FileName>frame.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\frame.h</FilePath>
+            </File>
+            <File>
+              <FileName>MyGPIO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\MyGPIO.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyGPIO.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\MyGPIO.h</FilePath>
+            </File>
+            <File>
+              <FileName>MyI2C.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\MyI2C.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyI2C.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\MyI2C.h</FilePath>
+            </File>
+            <File>
+              <FileName>MyOLED.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\MyOLED.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyOLED.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\MyOLED.h</FilePath>
+            </File>
+            <File>
+              <FileName>MyOLED_Render.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\MyOLED_Render.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyOLED_Render.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\MyOLED_Render.h</FilePath>
+            </File>
+            <File>
+              <FileName>Keyboard.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Keyboard.c</FilePath>
+            </File>
+            <File>
+              <FileName>Keyboard.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\Keyboard.h</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>User</GroupName>
