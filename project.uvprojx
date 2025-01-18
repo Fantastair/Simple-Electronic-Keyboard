@@ -685,6 +685,16 @@
               <FileType>5</FileType>
               <FilePath>.\Software\Page.h</FilePath>
             </File>
+            <File>
+              <FileName>Music.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Software\Music.c</FilePath>
+            </File>
+            <File>
+              <FileName>Music.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Software\Music.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -749,6 +759,16 @@
               <FileName>Keyboard.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Hardware\Keyboard.h</FilePath>
+            </File>
+            <File>
+              <FileName>Buzzer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Buzzer.c</FilePath>
+            </File>
+            <File>
+              <FileName>Buzzer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\Buzzer.h</FilePath>
             </File>
           </Files>
         </Group>
