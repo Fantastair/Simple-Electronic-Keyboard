@@ -5,15 +5,15 @@
 #include "frame.h"
 #include "Page.h"
 #include "Keyboard.h"
+#include "Serial.h"
 
 int main(void)
 {
     // 模块初始化
-    MyOLED_Init();
-    MyOLED_Clear_GRAM();
-    MyOLED_Flip();
+    MyOLED_Init(); MyOLED_Clear_GRAM(); MyOLED_Flip();
     MyTime_Init();
     Keyboard_Init();
+    Serial_Init();
 
     while (1)
     {

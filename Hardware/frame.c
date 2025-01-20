@@ -4,6 +4,7 @@
 #include "Page.h"
 #include "frame.h"
 #include "stdlib.h"
+#include "Serial.h"
 
 uint16_t last_keyboard_num = 0;
 
@@ -29,6 +30,8 @@ void CheckHardware(Page *page)
         }
     }
     last_keyboard_num = keyboard_num;
+
+    Serial_HandleOrder();
 }
 
 
