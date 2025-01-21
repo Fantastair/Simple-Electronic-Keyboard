@@ -3,7 +3,9 @@
 #include "MyNVIC.h"
 #include "MyGPIO.h"
 
-#define BAUDRATE 112100
+#include "Page.h"
+
+#define BAUDRATE 115200
 #define TX_GPIO MyGPIOA
 #define TX_Pin GPIO_Pin_9
 #define RX_GPIO MyGPIOA
@@ -145,7 +147,7 @@ void Serial_Init(void)
     MyGPIO_Init(&TX_GPIO, TX_Pin, GPIO_Mode_AF_PP,  GPIO_Speed_50MHz);
     MyGPIO_Init(&RX_GPIO, RX_Pin, GPIO_Mode_IPU,  GPIO_Speed_50MHz);
     __Serial_Init(BAUDRATE);
-    Serial_NVIC_Config(2, 2);
+    Serial_NVIC_Config(1, 1);
 }
 
 
@@ -172,7 +174,7 @@ void clear_read_flag(void)
 /**
  * @brief 中断函数
  */
-void USARTx_IRQHandler(void)
+void USART1_IRQHandler(void)
 {
     uint8_t temp;
 
@@ -255,7 +257,6 @@ void USARTx_IRQHandler(void)
  * @param data 数据字节数组
  * @param Length 数据长度
  */
-
 void Serial_SendDataPackage(uint8_t * data, uint8_t Length)
 {
     uint8_t i;
@@ -270,6 +271,8 @@ void Serial_SendDataPackage(uint8_t * data, uint8_t Length)
     Serial_SendByte(0x00);
 }
 
+uint8_t shake_hands[] = {0x66};
+
 /**
  * @brief 指令处理函数，如果指令传输完毕，则会解释并执行指令
  */
@@ -281,6 +284,9 @@ void Serial_HandleOrder(void)
     {
         switch (SerialRecvData[2])
         {
+        case 0x00:    // 握手
+            Serial_SendDataPackage(shake_hands, 1);
+            break;
         default:
             break;
         }
@@ -289,7 +295,9 @@ void Serial_HandleOrder(void)
     {
         switch (SerialRecvData[2])
         {
-
+        case 0x00:    // 模拟按键输入
+            if (SerialRecvData[3] == 0x00) current_page->PageButtonDown(SerialRecvData[4]);
+            else current_page->PageButtonUp(SerialRecvData[4]);
         default:
             break;
         }

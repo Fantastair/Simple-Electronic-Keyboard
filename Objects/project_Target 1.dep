@@ -809,7 +809,7 @@ I (.\Library\stm32f10x_usart.h)(0x669E5979)
 I (.\Library\stm32f10x_wwdg.h)(0x669E5979)
 I (.\Library\misc.h)(0x669E5979)
 F (.\Software\MyMisc.h)(0x678B9046)()
-F (.\Software\Page.c)(0x678BA621)(--c99 --gnu -c --cpu Cortex-M3 -g -O1 --apcs=interwork --split_sections -I .\Start -I .\Hardware -I .\User -I .\Library -I .\Software-IC:\Users\23642\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="540" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\page.o --omf_browse .\objects\page.crf --depend .\objects\page.d)
+F (.\Software\Page.c)(0x678F7F6E)(--c99 --gnu -c --cpu Cortex-M3 -g -O1 --apcs=interwork --split_sections -I .\Start -I .\Hardware -I .\User -I .\Library -I .\Software-IC:\Users\23642\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="540" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\page.o --omf_browse .\objects\page.crf --depend .\objects\page.d)
 I (.\Start\stm32f10x.h)(0x678DF838)
 I (.\Start\core_cm3.h)(0x669E5978)
 I (C:\Users\23642\AppData\Local\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdint.h)(0x5E8E3CC2)
@@ -838,8 +838,10 @@ I (.\Library\stm32f10x_tim.h)(0x669E5979)
 I (.\Library\stm32f10x_usart.h)(0x669E5979)
 I (.\Library\stm32f10x_wwdg.h)(0x669E5979)
 I (.\Library\misc.h)(0x669E5979)
-I (Software\Page.h)(0x678BA45B)
-F (.\Software\Page.h)(0x678BA45B)()
+I (Software\Page.h)(0x678F7F31)
+I (.\Hardware\MyOLED.h)(0x66C49A0A)
+I (.\Hardware\MyOLED_Render.h)(0x678F7E22)
+F (.\Software\Page.h)(0x678F7F31)()
 F (.\Software\Music.c)(0x678BB994)(--c99 --gnu -c --cpu Cortex-M3 -g -O1 --apcs=interwork --split_sections -I .\Start -I .\Hardware -I .\User -I .\Library -I .\Software-IC:\Users\23642\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="540" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\music.o --omf_browse .\objects\music.crf --depend .\objects\music.d)
 I (.\Start\stm32f10x.h)(0x678DF838)
 I (.\Start\core_cm3.h)(0x669E5978)
@@ -902,7 +904,7 @@ I (.\Library\stm32f10x_wwdg.h)(0x669E5979)
 I (.\Library\misc.h)(0x669E5979)
 I (Hardware\Keyboard.h)(0x678B8DD7)
 I (.\Software\MyMisc.h)(0x678B9046)
-I (.\Software\Page.h)(0x678BA45B)
+I (.\Software\Page.h)(0x678F7F31)
 I (Hardware\frame.h)(0x678BC22A)
 I (C:\Users\23642\AppData\Local\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdlib.h)(0x5E8E3CC2)
 I (Hardware\Serial.h)(0x678DF815)
@@ -1000,7 +1002,7 @@ I (.\Library\stm32f10x_wwdg.h)(0x669E5979)
 I (.\Library\misc.h)(0x669E5979)
 I (Hardware\MyI2C.h)(0x66BB4226)
 F (.\Hardware\MyOLED.h)(0x66C49A0A)()
-F (.\Hardware\MyOLED_Render.c)(0x674B3C37)(--c99 --gnu -c --cpu Cortex-M3 -g -O1 --apcs=interwork --split_sections -I .\Start -I .\Hardware -I .\User -I .\Library -I .\Software-IC:\Users\23642\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="540" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\myoled_render.o --omf_browse .\objects\myoled_render.crf --depend .\objects\myoled_render.d)
+F (.\Hardware\MyOLED_Render.c)(0x678F7E1B)(--c99 --gnu -c --cpu Cortex-M3 -g -O1 --apcs=interwork --split_sections -I .\Start -I .\Hardware -I .\User -I .\Library -I .\Software-IC:\Users\23642\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="540" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\myoled_render.o --omf_browse .\objects\myoled_render.crf --depend .\objects\myoled_render.d)
 I (.\Start\stm32f10x.h)(0x678DF838)
 I (.\Start\core_cm3.h)(0x669E5978)
 I (C:\Users\23642\AppData\Local\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdint.h)(0x5E8E3CC2)
@@ -1030,8 +1032,8 @@ I (.\Library\stm32f10x_usart.h)(0x669E5979)
 I (.\Library\stm32f10x_wwdg.h)(0x669E5979)
 I (.\Library\misc.h)(0x669E5979)
 I (Hardware\MyOLED.h)(0x66C49A0A)
-I (Hardware\MyOLED_Render.h)(0x674AAB0D)
-F (.\Hardware\MyOLED_Render.h)(0x674AAB0D)()
+I (Hardware\MyOLED_Render.h)(0x678F7E22)
+F (.\Hardware\MyOLED_Render.h)(0x678F7E22)()
 F (.\Hardware\Keyboard.c)(0x678B8D93)(--c99 --gnu -c --cpu Cortex-M3 -g -O1 --apcs=interwork --split_sections -I .\Start -I .\Hardware -I .\User -I .\Library -I .\Software-IC:\Users\23642\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="540" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\keyboard.o --omf_browse .\objects\keyboard.crf --depend .\objects\keyboard.d)
 I (.\Start\stm32f10x.h)(0x678DF838)
 I (.\Start\core_cm3.h)(0x669E5978)
@@ -1092,7 +1094,7 @@ I (.\Library\stm32f10x_usart.h)(0x669E5979)
 I (.\Library\stm32f10x_wwdg.h)(0x669E5979)
 I (.\Library\misc.h)(0x669E5979)
 F (.\Hardware\Buzzer.h)(0x678BB533)()
-F (.\Hardware\Serial.c)(0x678DF7B3)(--c99 --gnu -c --cpu Cortex-M3 -g -O1 --apcs=interwork --split_sections -I .\Start -I .\Hardware -I .\User -I .\Library -I .\Software-IC:\Users\23642\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="540" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\serial.o --omf_browse .\objects\serial.crf --depend .\objects\serial.d)
+F (.\Hardware\Serial.c)(0x678F726E)(--c99 --gnu -c --cpu Cortex-M3 -g -O1 --apcs=interwork --split_sections -I .\Start -I .\Hardware -I .\User -I .\Library -I .\Software-IC:\Users\23642\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="540" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\serial.o --omf_browse .\objects\serial.crf --depend .\objects\serial.d)
 I (.\Start\stm32f10x.h)(0x678DF838)
 I (.\Start\core_cm3.h)(0x669E5978)
 I (C:\Users\23642\AppData\Local\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdint.h)(0x5E8E3CC2)
@@ -1155,7 +1157,7 @@ I (.\Library\stm32f10x_usart.h)(0x669E5979)
 I (.\Library\stm32f10x_wwdg.h)(0x669E5979)
 I (.\Library\misc.h)(0x669E5979)
 F (.\Hardware\MyNVIC.h)(0x66BA0492)()
-F (.\User\main.c)(0x678DF8A3)(--c99 --gnu -c --cpu Cortex-M3 -g -O1 --apcs=interwork --split_sections -I .\Start -I .\Hardware -I .\User -I .\Library -I .\Software-IC:\Users\23642\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="540" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+F (.\User\main.c)(0x678F7F4C)(--c99 --gnu -c --cpu Cortex-M3 -g -O1 --apcs=interwork --split_sections -I .\Start -I .\Hardware -I .\User -I .\Library -I .\Software-IC:\Users\23642\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="540" -DSTM32F10X_MD -DUSE_STDPERIPH_DRIVER-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
 I (.\Start\stm32f10x.h)(0x678DF838)
 I (.\Start\core_cm3.h)(0x669E5978)
 I (C:\Users\23642\AppData\Local\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdint.h)(0x5E8E3CC2)
@@ -1186,9 +1188,9 @@ I (.\Library\stm32f10x_wwdg.h)(0x669E5979)
 I (.\Library\misc.h)(0x669E5979)
 I (.\Software\MyTime.h)(0x678B8432)
 I (.\Hardware\MyOLED.h)(0x66C49A0A)
-I (.\Hardware\MyOLED_Render.h)(0x674AAB0D)
+I (.\Hardware\MyOLED_Render.h)(0x678F7E22)
 I (.\Hardware\frame.h)(0x678BC22A)
-I (.\Software\Page.h)(0x678BA45B)
+I (.\Software\Page.h)(0x678F7F31)
 I (.\Hardware\Keyboard.h)(0x678B8DD7)
 I (.\Hardware\Serial.h)(0x678DF815)
 F (.\User\stm32f10x_conf.h)(0x669E597C)()

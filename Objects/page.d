@@ -29,3 +29,5 @@
 .\objects\page.o: .\Library\stm32f10x_wwdg.h
 .\objects\page.o: .\Library\misc.h
 .\objects\page.o: Software\Page.h
+.\objects\page.o: .\Hardware\MyOLED.h
+.\objects\page.o: .\Hardware\MyOLED_Render.h

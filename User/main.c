@@ -14,10 +14,11 @@ int main(void)
     MyTime_Init();
     Keyboard_Init();
     Serial_Init();
+    Page_Init();
 
     while (1)
     {
-        CheckHardware(current_page);    // 检查硬件输入
+        // CheckHardware(current_page);    // 检查硬件输入
         Frame_Tick();    // 执行帧函数
         current_page->PageRender();    // 渲染屏幕
     }

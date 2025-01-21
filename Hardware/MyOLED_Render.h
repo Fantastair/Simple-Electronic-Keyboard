@@ -11,6 +11,6 @@ void MyOLED_Blit_HexNum_ASCII_8x16(uint8_t Left, uint8_t Top, uint32_t Number, u
 void MyOLED_Blit_BinNum_ASCII_8x16(uint8_t Left, uint8_t Top, uint16_t Number, uint8_t Length);
 void MyOLED_Blit_FloatNum_ASCII_8x16(uint8_t Left, uint8_t Top, float Number, uint8_t int_Length, uint8_t float_Length);
 
-void MyOLED_Render_Icon_fantas_128x35(uint8_t Top);
+void MyOLED_Blit_Icon_64x64(uint8_t Left);
 
 #endif
