@@ -6,6 +6,10 @@
 #include "stdlib.h"
 #include "Serial.h"
 
+#include "MyTime.h"
+#include "MyOLED.h"
+#include "MyOLED_Render.h"
+
 uint16_t last_keyboard_num = 0;
 
 /**
@@ -35,153 +39,127 @@ void CheckHardware(Page *page)
 }
 
 
-TickFunc *TickFuncHead = NULL;
+TickFunc TFHead = {NULL, NULL};
+TickFunc TFTail = {NULL, NULL};
 
 /**
- * @brief 搜索帧函数结构体
- * @param TF 结构体指针
- * @retval 帧函数结构体地址，不存在则返回 NULL
+ * @brief 初始化模块
  */
-TickFunc* Search_TickFunc(TickFunc *TF)
+void FrameInit(void)
 {
-    TickFunc *pTF = TickFuncHead;
-
-    while (pTF != NULL)
-    {
-        if (pTF == TF)
-        {
-            return pTF;
-        }
-        pTF = pTF->next;
-    }
-    return NULL;
+    TFHead.next = &TFTail;
+    TFTail.last = &TFHead;
 }
 
 /**
- * @brief 创建一个帧函数对象
- *     初始当前帧为 0，下一个帧函数指针为 NULL
- * @param tickfunc 执行函数
- * @param total_frames 持续帧数
- * @param temp_flag 临时标志，为 1 则会在帧函数执行完毕后自动销毁其内存
- * @retval 帧函数对象的结构体地址
+ * @brief 判断帧函数是否在链表中
+ * @param pTF 帧函数指针
+ * @retval True or False
  */
-TickFunc* Create_TickFunc(void (*tickfunc)(uint16_t), uint16_t total_frames, uint8_t temp_flag)
+MyBool TickFuncInLink(TickFunc * pTF)
 {
-    TickFunc *pTF = (TickFunc*)malloc(sizeof(TickFunc));
+    TickFunc * pTF2 = TFHead.next;
 
-    pTF->current_frame = 0;
+    while (pTF2 != &TFTail)
+    {
+        if (pTF2 == pTF) return True;
+        pTF2 = pTF2->next;
+    }
+    return False;
+}
+
+/**
+ * @brief 添加帧函数到链表最后
+ * @param pTF 帧函数指针
+ */
+void TickFuncAppend(TickFunc * pTF)
+{
+    pTF->last = TFTail.last;
+    TFTail.last->next = pTF;
+    pTF->next = &TFTail;
+    TFTail.last = pTF;
+}
+
+/**
+ * @brief 从链表中删除帧函数，必须确保帧函数存在
+ * @param pTF 帧函数指针
+ */
+void TickFuncRemove(TickFunc * pTF)
+{
+    pTF->last->next = pTF->next;
+    pTF->next->last = pTF->last;
+    if (pTF->auto_destroy == True) free(pTF);
+}
+
+/**
+ * @brief 创建帧函数
+ * @param func 执行函数，接收一个 uint16_t 参数，返回 void
+ * @param totalframe 持续帧数，如果为 0，则永久持续，只能由其他函数手动停止
+ * @param auto_destroy 是否自动销毁，为 True 或 False，如果需要重复使用此帧函数，则使用 False
+ * @retval 返回新建帧函数的地址
+ */
+TickFunc * CreateTickFunc(void (*func)(uint16_t), uint16_t totalframe, MyBool auto_destroy)
+{
+    TickFunc * pTF = (TickFunc *)malloc(sizeof(TickFunc));
+
     pTF->next = NULL;
-    pTF->tickfunc = tickfunc;
-    pTF->total_frames = total_frames;
-    pTF->temp_flag = temp_flag;
+    pTF->last = NULL;
+    pTF->func = func;
+    pTF->totalframe = totalframe;
+    pTF->current_frame = 0;
+    pTF->auto_destroy = auto_destroy;
 
     return pTF;
 }
 
 /**
- * @brief 启动帧函数
- *     如果该帧函数已经启动，则重新将帧数置 0
- * @param TF 帧函数指针
+ * @brief 启动帧函数，如果帧函数已经启动，则从第 0 帧开始
+ * @param pTF 帧函数指针
  */
-void Start_TickFunc(TickFunc *TF)
+void LaunchTickFunc(TickFunc * pTF)
 {
-    TickFunc *pTF = TickFuncHead;
-    TF->current_frame = 0;
-
-    if (pTF == NULL)
-    {
-        TickFuncHead = TF;
-        return;
-    }
-    
-    if (Search_TickFunc(TF) == NULL)
-    {
-        while (pTF->next != NULL) {pTF = pTF->next;}
-        pTF->next = TF;
-    }
+    pTF->current_frame = 0;
+    if (!TickFuncInLink(pTF)) TickFuncAppend(pTF);
 }
 
 /**
- * @brief 申请帧函数，这会直接创建并启动临时标志为 1 的帧函数
- * @param tickfunc 执行函数
- * @param total_frames 持续帧数
+ * @brief 停止帧函数
+ * @param pTF 帧函数指针
  */
-void Apply_TickFunc(void (*tickfunc)(uint16_t), uint16_t total_frames)
+void StopTickFunc(TickFunc * pTF)
 {
-    Start_TickFunc(Create_TickFunc(tickfunc, total_frames, 1));
+    if (TickFuncInLink(pTF)) TickFuncRemove(pTF);
 }
 
 /**
- * @brief 手动停止帧函数
- *     停止不存在的帧函数是安全的
- * @param TF 帧函数指针
+ * @brief 执行帧函数
  */
-void Stop_TickFunc(TickFunc *TF)
+void FrameTick(void)
 {
-    TickFunc *pTF = TickFuncHead;
+    TickFunc * pTF = TFHead.next;
 
-    if (pTF == NULL) return;
-
-    while (pTF->next != NULL && pTF->next != TF) pTF = pTF->next;
-
-    if (pTF->next == NULL) return;
-    else
+    while (pTF != &TFTail)
     {
-        pTF->next = TF->next;
-    }
-}
-
-/**
- * @brief 继续被暂停的帧函数
- *     继续未被暂停的帧函数是安全的
- * @param TF 帧函数指针
- */
-void Continue_TickFunc(TickFunc *TF)
-{
-    TickFunc *pTF = TickFuncHead;
-
-    if (pTF == NULL)
-    {
-        TickFuncHead = TF;
-        return;
-    }
-    
-    if (Search_TickFunc(TF) == NULL)
-    {
-        while (pTF->next != NULL) {pTF = pTF->next;}
-        pTF->next = TF;
-    }
-}
-
-/**
- * @brief 销毁帧函数，释放其内存
- *     可以直接销毁正在启动的帧函数
- * @param TF 帧函数指针
- */
-void Destroy_TickFunc(TickFunc *TF)
-{
-    if (Search_TickFunc(TF) != NULL) Stop_TickFunc(TF);
-    free(TF);
-}
-
-/**
- * @brief 执行所有帧函数的执行函数，并清除已经结束的帧函数
- *     帧函数的执行顺序取决于启动的顺序
- */
-void Frame_Tick(void)
-{
-    TickFunc *pTF = TickFuncHead;
-
-    while (pTF != NULL)
-    {
-        pTF->tickfunc(pTF->current_frame);
-        pTF->current_frame ++;
-        if (pTF->current_frame == pTF->total_frames)
+        pTF->func(pTF->current_frame);
+        if (pTF->totalframe != 0)
         {
-            if (pTF->temp_flag)
-                Destroy_TickFunc(pTF);
-            else
-                Stop_TickFunc(pTF);
+            if (pTF->current_frame + 1 == pTF->totalframe)
+            {
+                pTF = pTF->last;
+                TickFuncRemove(pTF->next);
+            }
+            else pTF->current_frame ++;
         }
+        pTF = pTF->next;
     }
+}
+
+/**
+ * @brief 快速创建并启动一个临时帧函数
+ * @param func 执行函数，接收一个 uint16_t 参数，返回 void
+ * @param totalframe 持续帧数，如果为 0，则永久持续，只能由其他函数手动停止
+ */
+void ApplyTickFunc(void (*func)(uint16_t), uint16_t totalframe)
+{
+    LaunchTickFunc(CreateTickFunc(func, totalframe, True));
 }

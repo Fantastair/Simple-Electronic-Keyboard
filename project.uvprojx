@@ -695,6 +695,16 @@
               <FileType>5</FileType>
               <FilePath>.\Software\Music.h</FilePath>
             </File>
+            <File>
+              <FileName>MyDelay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Software\MyDelay.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyDelay.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Software\MyDelay.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -789,6 +799,26 @@
               <FileName>MyNVIC.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Hardware\MyNVIC.h</FilePath>
+            </File>
+            <File>
+              <FileName>MyPWM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\MyPWM.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyPWM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\MyPWM.h</FilePath>
+            </File>
+            <File>
+              <FileName>MyTIM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\MyTIM.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyTIM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\MyTIM.h</FilePath>
             </File>
           </Files>
         </Group>

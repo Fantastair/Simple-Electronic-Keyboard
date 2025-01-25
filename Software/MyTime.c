@@ -1,22 +1,13 @@
 // 这是整个程序的计时模块，可以随时获取时间刻以确定时间
 #include "stm32f10x.h"
+#include "MyTIM.h"
 
 /**
  * @brief 计时模块初始化
  */
 void MyTime_Init(void)
 {
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE); 
-
-    TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
-    TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-    TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseInitStructure.TIM_Period = 65535;
-    TIM_TimeBaseInitStructure.TIM_Prescaler = 36000;
-    TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
-    TIM_TimeBaseInit(TIM1, &TIM_TimeBaseInitStructure);
-
-    TIM_Cmd(TIM1, ENABLE);
+    MyTIM_Init_Internal(&MyTIM1, 65535, 36000);
 }
 
 /**
@@ -28,7 +19,7 @@ void MyTime_Init(void)
  */
 uint16_t MyTime_GetTick(void)
 {
-    return TIM_GetCounter(TIM1);
+    return MyTIM_GetCounter(&MyTIM1);
 }
 
 /**

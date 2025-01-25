@@ -47,7 +47,7 @@ void WelcomePage_Render(void)
 {
     if ((MyTime_GetTick() - WelcomePage_temp) % 65536 > 3000)
     {
-        SetPage();
+        // SetPage();
     }
 }
 
