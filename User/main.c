@@ -3,10 +3,10 @@
 #include "MyOLED.h"
 #include "MyOLED_Render.h"
 #include "frame.h"
-#include "Page.h"
-#include "Keyboard.h"
 #include "Serial.h"
-#include "MyDelay.h"
+#include "Keyboard.h"
+#include "Page.h"
+#include "Buzzer.h"
 
 int main(void)
 {
@@ -14,8 +14,9 @@ int main(void)
     FrameInit();
     MyOLED_Init(); MyOLED_Clear_GRAM(); MyOLED_Flip();
     MyTime_Init();
-    Keyboard_Init();
     Serial_Init();
+    Keyboard_Init();
+    Buzzer_Init();
     Page_Init();
 
     while (1)

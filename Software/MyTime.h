@@ -5,8 +5,8 @@
 
 
 void MyTime_Init(void);
-uint16_t MyTime_GetTick(void);
-float MyTime_Tick2Second(uint16_t ticks);
+uint32_t MyTime_GetTick(void);
+float MyTime_Tick2Second(uint32_t ticks);
 
 
 
