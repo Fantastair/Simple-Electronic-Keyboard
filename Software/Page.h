@@ -17,5 +17,7 @@ extern Page *current_page;    // 当前界面函数指针
 void SetPage(Page *page);
 void Page_Init(void);
 
+void MainPage_DrawVolumeBar(void);
+
 
 #endif

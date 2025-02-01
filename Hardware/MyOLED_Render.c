@@ -341,6 +341,43 @@ void MyOLED_Blit_FloatNum_ASCII_8x16(uint8_t Left, uint8_t Top, float Number, ui
 }
 
 /**
+ * @brief 绘制圆
+ * @param centerX 圆心横坐标
+ * @param centerY 圆心纵坐标
+ * @param radius 半径
+ * @param bd 边框粗细
+ */
+void MyOLED_DrawCircle(uint8_t centerX, uint8_t centerY, uint8_t radius, uint8_t bd)
+{
+    int x = radius;
+    int y = 0;
+    int err = 0;
+
+    while (x >= y) {
+        for (int i = 0; i < bd; i++) {
+            MyOLED_Blit_Point(centerX + x - i, centerY + y, 1);
+            MyOLED_Blit_Point(centerX + y - i, centerY + x, 1);
+            MyOLED_Blit_Point(centerX - y - i, centerY + x, 1);
+            MyOLED_Blit_Point(centerX - x - i, centerY + y, 1);
+            MyOLED_Blit_Point(centerX - x - i, centerY - y, 1);
+            MyOLED_Blit_Point(centerX - y - i, centerY - x, 1);
+            MyOLED_Blit_Point(centerX + y - i, centerY - x, 1);
+            MyOLED_Blit_Point(centerX + x - i, centerY - y, 1);
+        }
+
+        if (err <= 0) {
+            y += 1;
+            err += 2 * y + 1;
+        }
+
+        if (err > 0) {
+            x -= 1;
+            err -= 2 * x + 1;
+        }
+    }
+}
+
+/**
  * @brief 在指定位置上渲染fantas图标
  * @param Left 图标左端的横坐标像素位置，0 ~ 64
  * @retval 无

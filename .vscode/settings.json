@@ -4,6 +4,7 @@
         "myoled_render.h": "c",
         "mytime.h": "c",
         "mytim.h": "c",
-        "frame.h": "c"
+        "frame.h": "c",
+        "myoled.h": "c"
     }
 }

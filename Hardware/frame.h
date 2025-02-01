@@ -25,6 +25,7 @@ void TickFuncAppend(TickFunc * pTF);
 
 TickFunc * CreateTickFunc(void (*func)(uint16_t), uint16_t totalframe, MyBool auto_destroy);
 void LaunchTickFunc(TickFunc * pTF);
+void StopTickFunc(TickFunc * pTF);
 void ApplyTickFunc(void (*func)(uint16_t), uint16_t totalframe);
 
 void FrameTick(void);

@@ -160,3 +160,79 @@ void MyMisc_DrawNoteSmall(uint8_t Left, uint8_t Top, uint8_t num, uint8_t by)
         break;
     }
 }
+
+/**
+ * @brief 在指定位置绘制大号音符，尺寸：12x20
+ * @param Left 锚点横坐标
+ * @param Top 锚点纵坐标
+ * @param num 音符编号，0 ~ 7
+ */
+void MyMisc_DrawNoteBig(uint8_t Left, uint8_t Top, uint8_t num)
+{
+    switch (num)
+    {
+    case 0:
+        MyOLED_Fill_GRAM_Rect(Left + 4, Top + 2, 4, 15);
+        MyOLED_Fill_GRAM_Rect(Left + 2, Top + 17, 8, 1);
+        MyOLED_Blit_Point(Left + 4, Top + 2, 0);
+        MyOLED_Blit_Point(Left + 3, Top + 4, 1);
+        MyOLED_Blit_Point(Left + 3, Top + 5, 1);
+        MyOLED_Blit_Point(Left + 2, Top + 5, 1);
+        break;
+    case 1:
+        MyOLED_Blit_Point(Left + 2, Top + 3, 1);
+        MyOLED_Blit_Point(Left + 2, Top + 4, 1);
+        MyOLED_Fill_GRAM_Rect(Left + 2, Top + 2, 8, 1);
+        MyOLED_Fill_GRAM_Rect(Left + 8, Top + 3, 2, 8);
+        MyOLED_Fill_GRAM_Rect(Left + 2, Top + 9, 6, 2);
+        MyOLED_Fill_GRAM_Rect(Left + 2, Top + 11, 3, 7);
+        MyOLED_Fill_GRAM_Rect(Left + 5, Top + 16, 5, 2);
+        break;
+    case 2:
+        MyOLED_Blit_Point(Left + 2, Top + 3, 1);
+        MyOLED_Blit_Point(Left + 2, Top + 4, 1);
+        MyOLED_Blit_Point(Left + 2, Top + 15, 1);
+        MyOLED_Fill_GRAM_Rect(Left + 2, Top + 2, 8, 1);
+        MyOLED_Fill_GRAM_Rect(Left + 2, Top + 16, 8, 2);
+        MyOLED_Fill_GRAM_Rect(Left + 7, Top + 3, 3, 13);
+        MyOLED_Fill_GRAM_Rect(Left + 3, Top + 9, 4, 2);
+        break;
+    case 3:
+        MyOLED_Fill_GRAM_Rect(Left + 7, Top + 2, 3, 16);
+        MyOLED_Fill_GRAM_Rect(Left + 2, Top + 2, 2, 11);
+        MyOLED_Fill_GRAM_Rect(Left + 4, Top + 12, 3, 1);
+        break;
+    case 4:
+        MyOLED_Blit_Point(Left + 2, Top + 15, 1);
+        MyOLED_Fill_GRAM_Rect(Left + 2, Top + 2, 8, 1);
+        MyOLED_Fill_GRAM_Rect(Left + 2, Top + 3, 2, 8);
+        MyOLED_Fill_GRAM_Rect(Left + 4, Top + 9, 6, 2);
+        MyOLED_Fill_GRAM_Rect(Left + 7, Top + 11, 3, 7);
+        MyOLED_Fill_GRAM_Rect(Left + 2, Top + 16, 5, 2);
+        break;
+    case 5:
+        MyOLED_Blit_Point(Left + 9, Top + 3, 1);
+        MyOLED_Fill_GRAM_Rect(Left + 2, Top + 2, 8, 1);
+        MyOLED_Fill_GRAM_Rect(Left + 2, Top + 3, 3, 15);
+        MyOLED_Fill_GRAM_Rect(Left + 5, Top + 9, 5, 2);
+        MyOLED_Fill_GRAM_Rect(Left + 5, Top + 16, 5, 2);
+        MyOLED_Fill_GRAM_Rect(Left + 8, Top + 11, 2, 5);
+        break;
+    case 6:
+        MyOLED_Blit_Point(Left + 2, Top + 4, 1);
+        MyOLED_Fill_GRAM_Rect(Left + 2, Top + 2, 8, 2);
+        MyOLED_Fill_GRAM_Rect(Left + 7, Top + 4, 3, 14);
+        break;
+    case 7:
+        MyOLED_Blit_Point(Left + 3, Top + 7, 1);
+        MyOLED_Blit_Point(Left + 3, Top + 8, 1);
+        MyOLED_Blit_Point(Left + 2, Top + 8, 1);
+        MyOLED_Fill_GRAM_Rect(Left + 5, Top + 1, 3, 3);
+        MyOLED_Fill_GRAM_Rect(Left + 4, Top + 5, 4, 12);
+        MyOLED_Blit_Point(Left + 4, Top + 5, 0);
+        MyOLED_Fill_GRAM_Rect(Left + 2, Top + 17, 8, 1);
+        break;
+    default:
+        break;
+    }
+}

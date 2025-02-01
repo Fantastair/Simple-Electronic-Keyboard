@@ -2,7 +2,7 @@
 #include "Serial.h"
 #include "MyNVIC.h"
 #include "MyGPIO.h"
-
+#include "Buzzer.h"
 #include "Page.h"
 
 #define BAUDRATE 115200
@@ -298,6 +298,11 @@ void Serial_HandleOrder(void)
         case 0x00:    // 模拟按键输入
             if (SerialRecvData[3] == 0x00) current_page->PageButtonDown(SerialRecvData[4]);
             else current_page->PageButtonUp(SerialRecvData[4]);
+            break;
+        case 0x01:
+            Buzzer_SetVolume(SerialRecvData[3]);
+            MainPage_DrawVolumeBar();
+            break;
         default:
             break;
         }

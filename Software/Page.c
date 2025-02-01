@@ -38,8 +38,8 @@ void SetPage(Page *page)
 
 void Page_Init(void)
 {
-    SetPage(&MainPage);
-    // SetPage(&WelcomePage);
+    // SetPage(&MainPage);
+    SetPage(&WelcomePage);
 }
 
 
@@ -66,6 +66,22 @@ void WelcomePage_Render(void)
 
 // ============= 主界面 =============
 
+/**
+ * @brief 绘制音量条
+ */
+void MainPage_DrawVolumeBar(void)
+{
+    uint8_t i, j = Buzzer_GetVolume();
+
+    MyOLED_Clear_GRAM_Rect(44, 4, 40, 4);
+    MyOLED_Fill_GRAM_Rect(44, 4, 8 * j, 4);
+    for (i = 1; i < j; i ++)
+    {
+        MyOLED_Clear_GRAM_Rect(43 + 8 * i, 4, 2, 4);
+    }
+    MyOLED_Update(44, 0, 40, 1);
+}
+
 void MainPage_Init(void)
 {
     int i;
@@ -84,12 +100,45 @@ void MainPage_Init(void)
     MyOLED_Fill_GRAM_Rect(112, 41, 1, 23);
     MyOLED_Fill_GRAM_Rect(0, 63, 128, 1);
     MyOLED_Fill_GRAM_Rect(0, 0, 128, 1);
+    MyOLED_Fill_GRAM_Rect(44, 11, 40, 2);
+    MyOLED_Fill_GRAM_Rect(44, 11, 2, 24);
+    MyOLED_Fill_GRAM_Rect(44, 33, 40, 2);
+    MyOLED_Fill_GRAM_Rect(82, 11, 2, 24);
+    MyOLED_Fill_GRAM_Rect(63, 11, 2, 24);
+    MyOLED_Fill_GRAM_Rect(50, 22, 8, 4);
+    MyOLED_Fill_GRAM_Rect(70, 22, 8, 4);
+    MyOLED_DrawCircle(20, 20, 15, 2);
+    MyOLED_DrawCircle(108, 20, 15, 2);
+    MainPage_DrawVolumeBar();
     MyOLED_Flip();
 }
 
+float ani_temp1 = 0;
+float ani_temp2 = 0.1;
+float ani_temp3 = 0;
+float ani_temp4 = 0.1;
 void MainPage_Render(void)
 {
-
+    if (Buzzer1.active == 1 && Buzzer1.volume > 0)
+    {
+        ani_temp3 += ani_temp4;
+        MyOLED_Clear_GRAM_Rect(96, 8, 24, 24);
+        MyOLED_DrawCircle(108, 20, 15, 2);
+        MyOLED_DrawCircle(108, 20, (uint8_t)ani_temp3, 1);
+        MyOLED_Update(96, 1, 24, 3);
+        if (ani_temp3 >= 8) ani_temp4 = -0.1;
+        else if (ani_temp3 <= 0) ani_temp4 = 0.1;
+    }
+    if (Buzzer2.active == 1 && Buzzer2.volume > 0)
+    {
+        ani_temp1 += ani_temp2;
+        MyOLED_Clear_GRAM_Rect(8, 8, 24, 24);
+        MyOLED_DrawCircle(20, 20, 15, 2);
+        MyOLED_DrawCircle(20, 20, (uint8_t)ani_temp1, 1);
+        MyOLED_Update(8, 1, 24, 3);
+        if (ani_temp1 >= 8) ani_temp2 = -0.1;
+        else if (ani_temp1 <= 0) ani_temp2 = 0.1;
+    }
 }
 
 void MainPage_ButtonDown(uint8_t num)
@@ -100,6 +149,16 @@ void MainPage_ButtonDown(uint8_t num)
         MyMisc_DrawNoteSmall(20 + num * 12, 50, num, 0);
         MyOLED_Update(17 + num * 12, 5, 10, 3);
         Buzzer_Play(num);
+    }
+    else if (num == 12)    // 音量 +
+    {
+        Buzzer_HighVolume();
+        MainPage_DrawVolumeBar();
+    }
+    else if (num == 13)    // 音量 -
+    {
+        Buzzer_LowerVolume();
+        MainPage_DrawVolumeBar();
     }
 }
 

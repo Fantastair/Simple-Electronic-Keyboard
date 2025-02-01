@@ -150,6 +150,10 @@ void FrameTick(void)
             }
             else pTF->current_frame ++;
         }
+        else
+        {
+            pTF->current_frame ++;
+        }
         pTF = pTF->next;
     }
 }
