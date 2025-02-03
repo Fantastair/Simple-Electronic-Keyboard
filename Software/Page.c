@@ -38,8 +38,8 @@ void SetPage(Page *page)
 
 void Page_Init(void)
 {
-    // SetPage(&MainPage);
-    SetPage(&WelcomePage);
+    SetPage(&MainPage);
+    // SetPage(&WelcomePage);
 }
 
 

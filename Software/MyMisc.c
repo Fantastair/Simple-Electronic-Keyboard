@@ -11,7 +11,7 @@
  */
 uint8_t MyMisc_GetValue16(uint16_t Num, uint8_t pos)
 {
-    return (Num >> (15 - pos)) % 2;
+    return Num >> (15 - pos) & 1;
 }
 
 /**

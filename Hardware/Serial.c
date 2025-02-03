@@ -3,7 +3,9 @@
 #include "MyNVIC.h"
 #include "MyGPIO.h"
 #include "Buzzer.h"
+#include "Keyboard.h"
 #include "Page.h"
+#include "frame.h"
 
 #define BAUDRATE 115200
 #define TX_GPIO MyGPIOA
@@ -272,7 +274,8 @@ void Serial_SendDataPackage(uint8_t * data, uint8_t Length)
 }
 
 uint8_t shake_hands[] = {0x66};
-
+uint8_t temp_data[16];
+uint16_t temp16;
 /**
  * @brief 指令处理函数，如果指令传输完毕，则会解释并执行指令
  */
@@ -287,6 +290,16 @@ void Serial_HandleOrder(void)
         case 0x00:    // 握手
             Serial_SendDataPackage(shake_hands, 1);
             break;
+        case 0x01:    // 读取音量
+            temp_data[0] = Buzzer_GetVolume();
+            Serial_SendDataPackage(temp_data, 1);
+            break;
+        case 0x02:    // 读取按键状态
+        temp16 = Keyboard_GetInput();
+            temp_data[0] = (temp16 & 0xff00) >> 8;
+            temp_data[1] = temp16 & 0xff;
+            Serial_SendDataPackage(temp_data, 2);
+            break;
         default:
             break;
         }
@@ -299,9 +312,9 @@ void Serial_HandleOrder(void)
             if (SerialRecvData[3] == 0x00) current_page->PageButtonDown(SerialRecvData[4]);
             else current_page->PageButtonUp(SerialRecvData[4]);
             break;
-        case 0x01:
+        case 0x01:    // 设置音量
             Buzzer_SetVolume(SerialRecvData[3]);
-            MainPage_DrawVolumeBar();
+            if (current_page == &MainPage) MainPage_DrawVolumeBar();
             break;
         default:
             break;

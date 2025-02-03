@@ -23,6 +23,7 @@
 
 
 void Keyboard_Init(void);
+void Keyboard_UpdateInput(uint16_t result);
 uint16_t Keyboard_GetInput(void);
 
 
