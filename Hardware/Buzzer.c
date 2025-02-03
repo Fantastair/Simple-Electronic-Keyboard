@@ -7,6 +7,7 @@
 #include "Buzzer.h"
 #include "MyMisc.h"
 #include "MyOLED_Render.h"
+#include "Page.h"
 
 void Buzzer1_On(void);
 void Buzzer2_On(void);
@@ -283,9 +284,12 @@ void Buzzer_Play(uint8_t note)
     }
     if (flag == 0 && Buzzer2.volume > 0)
     {
-        MyOLED_Clear_GRAM_Rect(66, 13, 16, 20);
-        MyMisc_DrawNoteBig(68, 13, note);
-        MyOLED_Update(66, 1, 16, 3);
+        if (current_page == &MainPage)
+        {
+            MyOLED_Clear_GRAM_Rect(66, 13, 16, 20);
+            MyMisc_DrawNoteBig(68, 13, note);
+            MyOLED_Update(66, 1, 16, 3);
+        }
         rvba_start = rvba_temp;
         rvba_total = BUZZERSMOOTHONTICK;
         rvba_target = Buzzer_GetVolume() * 18 / 5;
@@ -294,9 +298,12 @@ void Buzzer_Play(uint8_t note)
     }
     else if (flag == 1 && Buzzer1.volume > 0)
     {
-        MyOLED_Clear_GRAM_Rect(46, 13, 17, 20);
-        MyMisc_DrawNoteBig(48, 13, note);
-        MyOLED_Update(46, 1, 17, 3);
+        if (current_page == &MainPage)
+        {
+            MyOLED_Clear_GRAM_Rect(46, 13, 17, 20);
+            MyMisc_DrawNoteBig(48, 13, note);
+            MyOLED_Update(46, 1, 17, 3);
+        }
         lvba_start = lvba_temp;
         lvba_total = BUZZERSMOOTHONTICK;
         lvba_target = Buzzer_GetVolume() * 18 / 5;
@@ -317,9 +324,12 @@ void Buzzer_UnPlay(uint8_t note)
         if (last_played == &Buzzer1)
             if (Buzzer2.active == 0) last_played = NULL;
             else last_played = &Buzzer2;
-        MyOLED_Clear_GRAM_Rect(66, 13, 16, 20);
-        MyOLED_Fill_GRAM_Rect(70, 22, 8, 4);
-        MyOLED_Update(66, 1, 16, 3);
+        if (current_page == &MainPage)
+        {
+            MyOLED_Clear_GRAM_Rect(66, 13, 16, 20);
+            MyOLED_Fill_GRAM_Rect(70, 22, 8, 4);
+            MyOLED_Update(66, 1, 16, 3);
+        }
         rvba_start = rvba_temp;
         rvba_total = BUZZERSMOOTHOFFTICK;
         rvba_target = 0;
@@ -332,9 +342,12 @@ void Buzzer_UnPlay(uint8_t note)
         if (last_played == &Buzzer2)
             if (Buzzer1.active == 0) last_played = NULL;
             else last_played = &Buzzer1;
-        MyOLED_Clear_GRAM_Rect(46, 13, 17, 20);
-        MyOLED_Fill_GRAM_Rect(50, 22, 8, 4);
-        MyOLED_Update(46, 1, 17, 3);
+        if (current_page == &MainPage)
+        {
+            MyOLED_Clear_GRAM_Rect(46, 13, 17, 20);
+            MyOLED_Fill_GRAM_Rect(50, 22, 8, 4);
+            MyOLED_Update(46, 1, 17, 3);
+        }
         lvba_start = lvba_temp;
         lvba_total = 24;
         lvba_target = 0;
@@ -358,10 +371,13 @@ void LeftVolumeBar_Ani(uint16_t tick)
     {
         l = (uint8_t)(lvba_start + (float)(lvba_target - lvba_start) * (float)t / lvba_total);
     }
-    MyOLED_Clear_GRAM_Rect(3, 43, 12, 20);
-    if (l > 0) MyOLED_Fill_GRAM_Rect(2, 61 - l, 11, l);
     lvba_temp = l;
-    MyOLED_Update(3, 5, 12, 3);
+    if (current_page == &MainPage)
+    {
+        MyOLED_Clear_GRAM_Rect(3, 43, 12, 20);
+        if (l > 0) MyOLED_Fill_GRAM_Rect(2, 61 - l, 11, l);
+        MyOLED_Update(3, 5, 12, 3);
+    }
 }
 
 void RightVolumeBar_Ani(uint16_t tick)
@@ -378,8 +394,11 @@ void RightVolumeBar_Ani(uint16_t tick)
     {
         l = (uint8_t)(rvba_start + (float)(rvba_target - rvba_start) * (float)t / rvba_total);
     }
-    MyOLED_Clear_GRAM_Rect(115, 43, 12, 20);
-    if (l > 0) MyOLED_Fill_GRAM_Rect(114, 61 - l, 11, l);
     rvba_temp = l;
-    MyOLED_Update(115, 5, 12, 3);    
+    if (current_page == &MainPage)
+    {
+        MyOLED_Clear_GRAM_Rect(115, 43, 12, 20);
+        if (l > 0) MyOLED_Fill_GRAM_Rect(114, 61 - l, 11, l);
+        MyOLED_Update(115, 5, 12, 3);
+    }
 }

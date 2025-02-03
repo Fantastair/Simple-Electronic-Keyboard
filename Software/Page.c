@@ -9,6 +9,8 @@
 #include "MyMisc.h"
 #include "Buzzer.h"
 
+#include "ChineseFont.h"
+
 void blankfunc1(void) {}    // 空函数，占位用
 void blankfunc2(uint8_t a) {}    // 空函数，占位用
 
@@ -19,11 +21,16 @@ void MainPage_Init(void);
 void MainPage_Render(void);
 void MainPage_ButtonDown(uint8_t num);
 void MainPage_ButtonUp(uint8_t num);
+void AboutPage_Init(void);
+void AboutPage_ButtonDown(uint8_t num);
+void AboutPage_ButtonUp(uint8_t num);
 
 Page WelcomePage = {WelcomePage_Init, WelcomePage_Render, blankfunc2, blankfunc2};
 Page MainPage = {MainPage_Init, MainPage_Render, MainPage_ButtonDown, MainPage_ButtonUp};
+Page AboutPage = {AboutPage_Init, blankfunc1, AboutPage_ButtonDown, AboutPage_ButtonUp};
 
-
+Page *PageList[2];    // 菜单切换界面列表
+int8_t PageListIndex;    // 菜单切换界面列表索引
 Page *current_page;    // 当前界面函数指针
 
 /**
@@ -36,10 +43,40 @@ void SetPage(Page *page)
     page->PageInit();
 }
 
+/**
+ * @brief 切换到下一个界面
+ */
+void NextPage(void)
+{
+    PageListIndex ++;
+    if (PageListIndex >= sizeof(PageList) / sizeof(PageList[0]))
+    {
+        PageListIndex = 0;
+    }
+    SetPage(PageList[PageListIndex]);
+}
+
+/**
+ * @brief 切换到上一个界面
+ */
+void PrevPage(void)
+{
+    PageListIndex --;
+    if (PageListIndex < 0)
+    {
+        PageListIndex = sizeof(PageList) / sizeof(PageList[0]) - 1;
+    }
+    SetPage(PageList[PageListIndex]);
+}
+
 void Page_Init(void)
 {
-    SetPage(&MainPage);
-    // SetPage(&WelcomePage);
+    PageList[0] = &MainPage;
+    PageList[1] = &AboutPage;
+
+    // SetPage(&AboutPage);
+    // SetPage(&MainPage);
+    SetPage(&WelcomePage);
 }
 
 
@@ -160,6 +197,14 @@ void MainPage_ButtonDown(uint8_t num)
         Buzzer_LowerVolume();
         MainPage_DrawVolumeBar();
     }
+    else if (num == 14)    // 下一个界面
+    {
+        NextPage();
+    }
+    else if (num == 15)    // 上一个界面
+    {
+        PrevPage();
+    }
 }
 
 void MainPage_ButtonUp(uint8_t num)
@@ -169,6 +214,78 @@ void MainPage_ButtonUp(uint8_t num)
         MyOLED_Clear_GRAM_Rect(17 + num * 12, 41, 10, 22);
         MyMisc_DrawNoteSmall(20 + num * 12, 53, num, 1);
         MyOLED_Update(17 + num * 12, 5, 10, 3);
+        Buzzer_UnPlay(num);
+    }
+}
+
+
+// ============= 关于 =============
+
+/*
+关于 简易电子琴
+V0.7.1
+不会弹琴的电阻
+*/
+
+uint8_t gy[] = {0, 1};
+uint8_t jydzq[] = {2, 3, 4, 5, 6};
+uint8_t bhtqddz[] = {7, 8, 9, 6, 10, 4, 11};
+
+void AboutPage_Init(void)
+{
+    uint8_t i;
+
+    MyOLED_Fill_GRAM_Rect(0, 0, 128, 64);
+    MyOLED_Clear_GRAM_Rect(1, 1, 126, 62);
+
+    for (i = 0; i < 2; i ++)
+    {
+        MyOLED_Blit_GRAM(ChineseFont[gy[i] * 2], 4 + i * 16, 4, 16);
+        MyOLED_Blit_GRAM(ChineseFont[gy[i] * 2 + 1], 4 + i * 16, 4 + 8, 16);
+    }
+    for (i = 0; i < 5; i ++)
+    {
+        MyOLED_Blit_GRAM(ChineseFont[jydzq[i] * 2], 44 + i * 16, 4, 16);
+        MyOLED_Blit_GRAM(ChineseFont[jydzq[i] * 2 + 1], 44 + i * 16, 4 + 8, 16);
+    }
+    MyOLED_Blit_String_ASCII_8x16(8, 24, "V0.7.2");
+    for (i = 0; i < 7; i ++)
+    {
+        MyOLED_Blit_GRAM(ChineseFont[bhtqddz[i] * 2], 4 + i * 16, 44, 16);
+        MyOLED_Blit_GRAM(ChineseFont[bhtqddz[i] * 2 + 1], 4 + i * 16, 44 + 8, 16);
+    }
+
+    MyOLED_Flip();
+}
+
+void AboutPage_ButtonDown(uint8_t num)
+{
+    if (num < 8)
+    {
+        Buzzer_Play(num);
+    }
+    else if (num == 12)    // 音量 +
+    {
+        Buzzer_HighVolume();
+    }
+    else if (num == 13)    // 音量 -
+    {
+        Buzzer_LowerVolume();
+    }
+    else if (num == 14)    // 下一个界面
+    {
+        NextPage();
+    }
+    else if (num == 15)    // 上一个界面
+    {
+        PrevPage();
+    }
+}
+
+void AboutPage_ButtonUp(uint8_t num)
+{
+    if (num < 8)
+    {
         Buzzer_UnPlay(num);
     }
 }

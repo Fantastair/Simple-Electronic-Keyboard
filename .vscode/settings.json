@@ -5,6 +5,7 @@
         "mytime.h": "c",
         "mytim.h": "c",
         "frame.h": "c",
-        "myoled.h": "c"
+        "myoled.h": "c",
+        "chinesefont.h": "c"
     }
 }

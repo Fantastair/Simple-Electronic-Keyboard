@@ -694,6 +694,11 @@
               <FileType>5</FileType>
               <FilePath>.\Software\Music.h</FilePath>
             </File>
+            <File>
+              <FileName>ChineseFont.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Software\ChineseFont.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
