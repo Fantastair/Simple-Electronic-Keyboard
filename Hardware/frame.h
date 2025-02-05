@@ -2,7 +2,6 @@
 #define __FRAME_H
 #include "Page.h"
 
-#define NULL 0
 typedef enum {False, True} MyBool;    // 布尔值定义
 
 typedef struct _tick_func

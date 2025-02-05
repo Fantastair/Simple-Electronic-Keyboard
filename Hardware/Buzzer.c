@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "stm32f10x.h"
 #include "MyGPIO.h"
 #include "MyTIM.h"
@@ -56,7 +57,7 @@ void Buzzer_Init(void)
     MyTIM_Init_Internal(&BUZZER2_TIM, 100 - 1, 720 - 1);
     MyPWM_OCInit(&BUZZER1_TIM, &BUZZER1_CH, TIM_OCPolarity_Low);
     MyPWM_OCInit(&BUZZER2_TIM, &BUZZER2_CH, TIM_OCPolarity_Low);
-    Buzzer_SetVolume(5);
+    Buzzer_SetVolume(1);
     Buzzer1.Off();
     Buzzer2.Off();
     Buzzer1.smoothoff_tick = CreateTickFunc(Buzzer1_SmoothOff_TickFunc, 0, False);

@@ -6,6 +6,9 @@
         "mytim.h": "c",
         "frame.h": "c",
         "myoled.h": "c",
-        "chinesefont.h": "c"
+        "chinesefont.h": "c",
+        "myflash.h": "c",
+        "buzzer.h": "c",
+        "mymisc.h": "c"
     }
 }

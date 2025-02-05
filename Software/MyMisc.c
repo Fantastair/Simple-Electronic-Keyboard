@@ -1,7 +1,9 @@
+#include <stdlib.h>
 #include "stm32f10x.h"
-
+#include "MyGPIO.h"
+#include "MyADC.h"
 #include "MyOLED.h"
-// #include "MyOLED_Render.h"
+#include "MyOLED_Render.h"
 
 /**
  * @brief 获取长度为 16 的二进制数的特定位
@@ -235,4 +237,27 @@ void MyMisc_DrawNoteBig(uint8_t Left, uint8_t Top, uint8_t num)
     default:
         break;
     }
+}
+
+/**
+ * @brief 初始化 ADC 通道用于实现随机数播种
+ */
+void MyMisc_InitRandom(void)
+{
+    MyGPIO_Init(&MyGPIOA, GPIO_Pin_5, GPIO_Mode_AIN, GPIO_Speed_50MHz);
+    MyADC_Init(&MyADC1, ENABLE, DISABLE, 1);
+    MyADC_RegularChannelConFig(&MyADC1, ADC_Channel_5, 1, ADC_SampleTime_1Cycles5);
+    MyADC_Start(&MyADC1);
+}
+
+/**
+ * @brief 获取一个随机数
+ * @param Start 起始值
+ * @param End 结束值
+ * @retval 0 ~ 65535
+ */
+uint16_t MyMisc_RandomInt(uint16_t Start, uint16_t End)
+{
+    srand(MyADC_GetValue(&MyADC1));
+    return rand() % (End - Start + 1) + Start;
 }

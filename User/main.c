@@ -7,18 +7,23 @@
 #include "Keyboard.h"
 #include "Page.h"
 #include "Buzzer.h"
+#include "MyMisc.h"
+#include "Music.h"
 
 int main(void)
 {
     // 模块初始化
     FrameInit();
     MyOLED_Init(); MyOLED_Clear_GRAM(); MyOLED_Flip();
+    MyMisc_InitRandom();
     MyTime_Init();
     Serial_Init();
     Keyboard_Init();
     Buzzer_Init();
     Page_Init();
+    Music_Init();
 
+    // 主循环
     while (1)
     {
         CheckHardware(current_page);    // 检查硬件输入

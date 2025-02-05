@@ -6,6 +6,7 @@
 #include "Keyboard.h"
 #include "Page.h"
 #include "frame.h"
+#include "Music.h"
 
 #define BAUDRATE 115200
 #define TX_GPIO MyGPIOA
@@ -289,13 +290,15 @@ void Serial_HandleOrder(void)
         {
         case 0x00:    // 握手
             Serial_SendDataPackage(shake_hands, 1);
+            Buzzer_SetVolume(1);
+            Music_Play(Music_GetNode(1));
             break;
         case 0x01:    // 读取音量
             temp_data[0] = Buzzer_GetVolume();
             Serial_SendDataPackage(temp_data, 1);
             break;
         case 0x02:    // 读取按键状态
-        temp16 = Keyboard_GetInput();
+            temp16 = Keyboard_GetInput();
             temp_data[0] = (temp16 & 0xff00) >> 8;
             temp_data[1] = temp16 & 0xff;
             Serial_SendDataPackage(temp_data, 2);

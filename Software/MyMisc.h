@@ -8,6 +8,7 @@ uint8_t MyMisc_GetValue16(uint16_t Num, uint8_t pos);
 
 void MyMisc_DrawNoteSmall(uint8_t Left, uint8_t Top, uint8_t num, uint8_t by);
 void MyMisc_DrawNoteBig(uint8_t Left, uint8_t Top, uint8_t num);
-
+void MyMisc_InitRandom(void);
+uint16_t MyMisc_RandomInt(uint16_t Start, uint16_t End);
 
 #endif

@@ -146,6 +146,7 @@ void MainPage_Init(void)
     MyOLED_Fill_GRAM_Rect(70, 22, 8, 4);
     MyOLED_DrawCircle(20, 20, 15, 2);
     MyOLED_DrawCircle(108, 20, 15, 2);
+    Buzzer_SetVolume(5);
     MainPage_DrawVolumeBar();
     MyOLED_Flip();
 }

@@ -814,6 +814,26 @@
               <FileType>5</FileType>
               <FilePath>.\Hardware\MyTIM.h</FilePath>
             </File>
+            <File>
+              <FileName>MyFlash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\MyFlash.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyFlash.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\MyFlash.h</FilePath>
+            </File>
+            <File>
+              <FileName>MyADC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\MyADC.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyADC.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\MyADC.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
