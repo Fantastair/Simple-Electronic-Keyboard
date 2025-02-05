@@ -249,7 +249,7 @@ void AboutPage_Init(void)
         MyOLED_Blit_GRAM(ChineseFont[jydzq[i] * 2], 44 + i * 16, 4, 16);
         MyOLED_Blit_GRAM(ChineseFont[jydzq[i] * 2 + 1], 44 + i * 16, 4 + 8, 16);
     }
-    MyOLED_Blit_String_ASCII_8x16(8, 24, "V0.7.2");
+    MyOLED_Blit_String_ASCII_8x16(8, 24, "V0.8.1");
     for (i = 0; i < 7; i ++)
     {
         MyOLED_Blit_GRAM(ChineseFont[bhtqddz[i] * 2], 4 + i * 16, 44, 16);
