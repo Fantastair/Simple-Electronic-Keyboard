@@ -9,6 +9,7 @@ volatile uint32_t time_counter = 0;  // 32位整型变量，用于记录时刻
  */
 void MyTime_Init(void)
 {
+    SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
     SysTick_Config(SystemCoreClock / 128);
 }
 
@@ -18,7 +19,7 @@ void SysTick_Handler(void)
 }
 /**
  * @brief 获取从程序开始直到当前的时刻
- *     本程序每秒记录 128 个时刻，最长计时超过 1 年
+ *     本程序每秒记录 128 个时刻
  * @retval 程序当前时刻
  */
 uint32_t MyTime_GetTick(void)

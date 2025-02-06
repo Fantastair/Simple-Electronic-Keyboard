@@ -7,6 +7,8 @@
 #include "Page.h"
 #include "frame.h"
 #include "Music.h"
+#include "MyOLED_Render.h"
+#include "MyFlash.h"
 
 #define BAUDRATE 115200
 #define TX_GPIO MyGPIOA
@@ -258,11 +260,11 @@ void USART1_IRQHandler(void)
 /**
  * @brief 发送响应数据包
  * @param data 数据字节数组
- * @param Length 数据长度
+ * @param Length 数据长度，最多 255 字节
  */
-void Serial_SendDataPackage(uint8_t * data, uint8_t Length)
+void Serial_SendDataPackage(uint8_t * data, uint16_t Length)
 {
-    uint8_t i;
+    uint16_t i;
     Serial_SendByte(0xff);
     Serial_SendByte(0xaa);
     Serial_SendByte(Length);
@@ -282,6 +284,8 @@ uint16_t temp16;
  */
 void Serial_HandleOrder(void)
 {
+    uint8_t i;
+
     if (data_ready_flag != 1) return;
 
     if (SerialRecvData[1] == 0x02)  // 读指令
@@ -303,6 +307,12 @@ void Serial_HandleOrder(void)
             temp_data[1] = temp16 & 0xff;
             Serial_SendDataPackage(temp_data, 2);
             break;
+        case 0x03:    // 读取 Flash 表头数据
+            Serial_SendDataPackage(FlashTableTemp + 16 * SerialRecvData[3], 16);
+            break;
+        case 0x04:    // 备份音频数据
+            Music_BackupMusic();
+            break;
         default:
             break;
         }
@@ -318,6 +328,16 @@ void Serial_HandleOrder(void)
         case 0x01:    // 设置音量
             Buzzer_SetVolume(SerialRecvData[3]);
             if (current_page == &MainPage) MainPage_DrawVolumeBar();
+            break;
+        case 0x02:    // 写入表头数据
+            for (i = 0; i < 16; i ++)
+            {
+                FlashTableTemp[16 * SerialRecvData[3] + i] = SerialRecvData[i + 4];
+            }
+            if (SerialRecvData[3] == 63) SyncFlashTableBack();
+            break;
+        case 0x03:    // 擦除页
+            MyFLASH_ErasePage(SerialRecvData[3]);
             break;
         default:
             break;

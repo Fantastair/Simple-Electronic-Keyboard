@@ -19,17 +19,20 @@ typedef struct _Music
 */
 
 extern Music MusicHead, MusicTail;    // 音频链表头尾
-extern uint8_t *FlashTable;    // 闪存表头指针
+extern uint8_t *FlashTable, FlashTableTemp[1024];    // 闪存表头指针
 
 void Music_ListAdd(Music *music);    // 添加音频
 void Music_ListRemove(Music *music);    // 移除音频
 Music * Music_Create(char *Name, uint16_t *Note, uint16_t *Tick);    // 创建音频
 uint8_t Music_Save(char * Name, uint16_t * Note, uint16_t * Tick, uint16_t Length);    // 存储音频数据到闪存
 
+void SyncFlashTable(void);
+void SyncFlashTableBack(void);
+
 void Music_Init(void);    // 初始化音频模块
 void Music_InitFlashTable(void);    // 初始化闪存表头数据
 
-float Music_GetLength(Music *music);    // 获取音频长度
+uint32_t Music_GetLength(Music *music);    // 获取音频长度
 uint8_t Music_GetLinkLength(void);    // 获取链表长度
 Music *Music_GetNode(uint8_t index);    // 获取链表节点
 
@@ -37,5 +40,7 @@ void Music_Play(Music *music);    // 播放音乐
 void Music_Stop(void);    // 停止音乐
 void Music_Pause(void);    // 暂停音乐
 void Music_Next(void);    // 播放下一首
+
+void Music_BackupMusic(void);    // 备份音频数据
 
 #endif

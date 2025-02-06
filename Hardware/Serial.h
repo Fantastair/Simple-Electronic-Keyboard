@@ -5,7 +5,7 @@
 
 void Serial_Init(void);
 
-void Serial_SendDataPackage(uint8_t * data, uint8_t Length);
+void Serial_SendDataPackage(uint8_t * data, uint16_t Length);
 void Serial_HandleOrder(void);
 
 

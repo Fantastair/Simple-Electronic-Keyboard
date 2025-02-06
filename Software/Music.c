@@ -6,7 +6,7 @@
 #include "frame.h"
 #include "Buzzer.h"
 #include "MyMisc.h"
-
+#include "Serial.h"
 #include "MyOLED.h"
 #include "MyOLED_Render.h"
 
@@ -58,6 +58,30 @@ Music * Music_Create(char *Name, uint16_t *Note, uint16_t *Tick)
 
 TickFunc *MusicTickFunc;    // 播放音乐帧函数
 
+uint8_t FlashTableTemp[1024];    // 闪存表头缓冲数据
+
+/**
+ * @brief 同步闪存表头数据到缓冲区
+ */
+void SyncFlashTable(void)
+{
+    uint16_t i;
+
+    for (i = 0; i < 1024; i ++)
+    {
+        FlashTableTemp[i] = MyFlash_ReadData_8((uint32_t)(FlashTable + i));
+    }
+}
+
+/**
+ * @brief 同步缓冲区数据到闪存表头
+ */
+void SyncFlashTableBack(void)
+{
+    MyFLASH_ErasePage(63);
+    MyFlash_WriteData_32x((uint32_t)(FlashTable), (uint32_t *)(FlashTableTemp), 1024 / 4);
+}
+
 /**
  * @brief 初始化音频模块
  *     音频数据存储在 flash 闪存区域
@@ -72,12 +96,14 @@ void Music_Init(void)
     uint16_t t4[] = {0, 16, 0, 16, 0, 16};
 
     FlashTable = (uint8_t *)MyFlash_GetPageAddress(63);
+    SyncFlashTable();
 
-    if (MyFlash_IsEmptyPage(63))    // 如果表头为空，则初始化表头并添加开机音效
+    if (MyFlash_IsEmptyPage(63))    // 如果表头为空，则初始化表头并添加内置音效
     {
-        Music_Save("Connect", t3, t4, 6);
-        Music_Save("Open ", t1, t2, 6);
         Music_InitFlashTable();
+        Music_Save("Connect", t3, t4, 6);
+        Music_Save("Open", t1, t2, 6);
+        SyncFlashTableBack();
     }
 
     MusicHead.next = &MusicTail;
@@ -85,11 +111,11 @@ void Music_Init(void)
     MusicTail.last = &MusicHead;
     MusicTail.next = NULL;
 
-    for (i = 48; i < 64; i ++)
+    for (i = 0; i < 64; i ++)
     {
-        if (MyFlash_ReadData_16((uint32_t)(FlashTable + 16 * i)) == 2)    // 第 i 页存储了音频数据
+        if (FlashTableTemp[16 * i] == 2)
         {
-            Music_Create((char *)(FlashTable + 16 * i + 2), (uint16_t *)MyFlash_GetPageAddress(i), (uint16_t *)(MyFlash_GetPageAddress(i) + 512));
+            Music_Create((char *)(FlashTableTemp + 16 * i + 1), (uint16_t *)MyFlash_GetPageAddress(i), (uint16_t *)(MyFlash_GetPageAddress(i) + 512));
         }
     }
 
@@ -102,27 +128,27 @@ void Music_Init(void)
  */
 void Music_InitFlashTable(void)
 {
-    uint16_t i;
+    uint8_t i;
 
     for (i = 0; i < 64; i ++)
     {
         if (MyFlash_IsEmptyPage(i))
         {
-            MyFlash_WriteData_16(MyFlash_GetPageAddress(63) + 16 * i, 0);
+            FlashTableTemp[16 * i] = 0;
         }
         else
         {
-            MyFlash_WriteData_16(MyFlash_GetPageAddress(63) + 16 * i, 1);
+            FlashTableTemp[16 * i] = 1;
         }
     }
 }
 
 /**
- * @brief 计算音频时刻长度，并转换成秒
+ * @brief 统计音频时刻长度
  * @param music 音频指针
- * @return 音频长度（秒）
+ * @return 音频长度
  */
-float Music_GetLength(Music *music)
+uint32_t Music_GetLength(Music *music)
 {
     uint16_t i;
     uint32_t result = 0;
@@ -131,7 +157,7 @@ float Music_GetLength(Music *music)
     {
         result += music->Tick[i];
     }
-    return MyTime_Tick2Second(result);
+    return result;
 }
 
 /**
@@ -175,7 +201,7 @@ Music *Music_GetNode(uint8_t index)
 
 /**
  * @brief 存储音频数据到闪存
- * @param Name 音频名称，长度必须为偶数（包括末位 \0 停止符）且小于 14
+ * @param Name 音频名称，长度（包括末位 \0 停止符）必须小于等于 15
  * @param Note 音符轨道
  * @param Tick 时刻轨道
  * @param Length 数据长度
@@ -196,9 +222,14 @@ uint8_t Music_Save(char * Name, uint16_t * Note, uint16_t * Tick, uint16_t Lengt
     }
     if (flag == 0) return 0;
 
-    for (i = 0; Name[i] != '\0'; i ++);
+    FlashTableTemp[16 * page] = 2;
     MyFlash_WriteData_16(MyFlash_GetPageAddress(63) + 16 * page, 2);
-    MyFlash_WriteData_16x((uint32_t)(FlashTable + 16 * page + 2), (uint16_t *)Name, (i + 1) / 2);
+    for (i = 0; Name[i] != '\0'; i ++)
+    {
+        FlashTableTemp[16 * page + 1 + i] = Name[i];
+    }
+    FlashTableTemp[16 * page + 1 + i] = '\0';
+    MyFLASH_ErasePage(page);
     MyFlash_WriteData_16x(MyFlash_GetPageAddress(page), Note, Length);
     MyFlash_WriteData_16x(MyFlash_GetPageAddress(page) + 512, Tick, Length);
     return 1;
@@ -207,7 +238,7 @@ uint8_t Music_Save(char * Name, uint16_t * Note, uint16_t * Tick, uint16_t Lengt
 Music *current_music = NULL;    // 当前播放的音频指针
 uint8_t play_mode = 0;    // 播放模式，0 为播放单曲，1 为单曲循环，2 为列表播放，3 为列表循环，4 为随机播放
 uint8_t play_state = 0;    // 播放状态，0 为停止，1 为播放，2 为暂停
-uint16_t play_tick;    // 播放时刻
+uint32_t play_tick;    // 播放时刻
 uint16_t play_index;    // 播放索引
 
 /**
@@ -311,5 +342,71 @@ void Music_PlayTickFunc(uint16_t tick)
             play_state = 0;
             StopTickFunc(MusicTickFunc);
         }
+    }
+}
+
+uint8_t music_ba_state = 0;    // 0：等待发送音频总数；1：等待发送音轨段数；2：等待发送音频名称；3：等待发送音符轨道数据；4：等待发送时刻轨道数据；5：等待发送结束信号
+uint8_t current_music_index = 0;    // 当前发送的音频索引
+uint8_t music_num;    // 音频总数
+uint8_t music_sub_num;    // 音轨段数
+uint8_t current_sub;    // 当前发送的音轨段数
+/**
+ * @brief 备份音频
+ */
+void Music_BackupMusic(void)
+{
+    uint16_t i;
+
+    switch (music_ba_state)
+    {
+    case 0:    // 发送音频总数
+        music_num = Music_GetLinkLength();
+        current_music_index = 0;
+        Serial_SendDataPackage(&music_num, 1);
+        music_ba_state = 1;
+        break;
+    case 1:    // 发送音轨段数
+        for (i = 0; Music_GetNode(current_music_index)->Note[i] != 0xffff; i ++);
+        music_sub_num = i / 64 + 1;
+        current_sub = 0;
+        Serial_SendDataPackage(&music_sub_num, 1);
+        music_ba_state = 2;
+        break;
+    case 2:    // 发送音频名称
+        for (i = 0; Music_GetNode(current_music_index)->Name[i] != '\0'; i ++);
+        Serial_SendDataPackage((uint8_t *)(Music_GetNode(current_music_index)->Name), i + 1);
+        music_ba_state = 3;
+        break;
+    case 3:    // 发送音符轨道数据
+        for (i = 0; Music_GetNode(current_music_index)->Note[i + 64 * current_sub] != 0xffff && i < 64; i ++);
+        Serial_SendDataPackage((uint8_t *)(Music_GetNode(current_music_index)->Note + 64 * current_sub), i * 2);
+        current_sub ++;
+        if (current_sub == music_sub_num)
+        {
+            music_ba_state = 4;
+            current_sub = 0;
+        }
+        break;
+    case 4:    // 发送时刻轨道数据
+        for (i = 0; Music_GetNode(current_music_index)->Tick[i + 64 * current_sub] != 0xffff && i < 64; i ++);
+        Serial_SendDataPackage((uint8_t *)(Music_GetNode(current_music_index)->Tick + 64 * current_sub), i * 2);
+        current_sub ++;
+        if (current_sub == music_sub_num)
+        {
+            music_ba_state = 1;
+            current_sub = 0;
+            current_music_index ++;
+            if (current_music_index == music_num)
+            {
+                music_ba_state = 5;
+            }
+        }
+        break;
+    case 5:    // 发送结束信号
+        Serial_SendDataPackage((uint8_t *)"\x00", 1);
+        music_ba_state = 0;
+        break;
+    default:
+        break;
     }
 }
