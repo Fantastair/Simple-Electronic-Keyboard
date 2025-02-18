@@ -9,6 +9,7 @@
 #include "Buzzer.h"
 #include "MyMisc.h"
 #include "Music.h"
+#include "led.h"
 
 int main(void)
 {
@@ -22,6 +23,7 @@ int main(void)
     Buzzer_Init();
     Page_Init();
     Music_Init();
+    LED_Init();
 
     // 主循环
     while (1)

@@ -7,9 +7,8 @@ typedef struct {
     uint32_t RCC_APB2Periph_GPIOx;
 } MyGPIO;
 
-extern MyGPIO MyGPIOA;
-extern MyGPIO MyGPIOB;
-    
+extern MyGPIO MyGPIOA, MyGPIOB, MyGPIOC;
+
 void MyGPIO_Init(MyGPIO* MyGPIOx, uint16_t GPIO_Pin_x, GPIOMode_TypeDef GPIO_Mode_x, GPIOSpeed_TypeDef GPIO_Speed_xMHz);
 
 #endif

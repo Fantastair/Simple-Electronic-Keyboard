@@ -3,6 +3,7 @@
 
 MyGPIO MyGPIOA = {GPIOA, RCC_APB2Periph_GPIOA};
 MyGPIO MyGPIOB = {GPIOB, RCC_APB2Periph_GPIOB};
+MyGPIO MyGPIOC = {GPIOC, RCC_APB2Periph_GPIOC};
 
 /**
   * @brief 初始化 GPIO 的特定端口

@@ -1,3 +1,5 @@
+#include <stddef.h>
+#include <string.h>
 #include "stm32f10x.h"
 #include "Serial.h"
 #include "MyNVIC.h"
@@ -276,9 +278,11 @@ void Serial_SendDataPackage(uint8_t * data, uint16_t Length)
     Serial_SendByte(0x00);
 }
 
-uint8_t shake_hands[] = {0x66};
-uint8_t temp_data[16];
+uint8_t shake_hands = 0x66;
+uint8_t temp_data[32];
 uint16_t temp16;
+uint32_t temp32;
+Music *tempm;
 /**
  * @brief 指令处理函数，如果指令传输完毕，则会解释并执行指令
  */
@@ -293,9 +297,13 @@ void Serial_HandleOrder(void)
         switch (SerialRecvData[2])
         {
         case 0x00:    // 握手
-            Serial_SendDataPackage(shake_hands, 1);
+            Serial_SendDataPackage(&shake_hands, 1);
             Buzzer_SetVolume(1);
-            Music_Play(Music_GetNode(1));
+            current_music = Music_GetNode(1);
+            play_state = 0;
+            play_mode = 0;
+            play_speed = 1;
+            Music_Play();
             break;
         case 0x01:    // 读取音量
             temp_data[0] = Buzzer_GetVolume();
@@ -313,6 +321,37 @@ void Serial_HandleOrder(void)
         case 0x04:    // 备份音频数据
             Music_BackupMusic();
             break;
+        case 0x05:    // 读取当前界面编号
+            Serial_SendDataPackage(&PageListIndex, 1);
+            break;
+        case 0x06:    // 读取播放信息
+            temp_data[0] = play_state;
+            temp_data[1] = play_speed;
+            temp_data[2] = play_mode;
+            temp_data[3] = play_index;
+            Serial_SendDataPackage(temp_data, 4);
+            break;
+        case 0x07:    // 读取歌曲信息
+            if (current_music == NULL)
+            {
+                temp_data[0] = 0;
+                Serial_SendDataPackage(temp_data, 1);
+            }
+            else
+            {
+                for (i = 0; current_music->Name[i] != '\0'; i ++)
+                {
+                    temp_data[i] = current_music->Name[i];
+                }
+                temp_data[i] = '\0';
+                temp32 = Music_GetLength(current_music);
+                temp_data[i + 1] = (uint8_t)((temp32 & 0xff000000) >> 24);
+                temp_data[i + 2] = (uint8_t)((temp32 & 0x00ff0000) >> 16);
+                temp_data[i + 3] = (uint8_t)((temp32 & 0x0000ff00) >> 8);
+                temp_data[i + 4] = (uint8_t)(temp32 & 0x000000ff);
+                temp_data[i + 5] = Music_GetNoteLength(current_music);
+                Serial_SendDataPackage(temp_data, i + 6);
+            }
         default:
             break;
         }
@@ -337,7 +376,76 @@ void Serial_HandleOrder(void)
             if (SerialRecvData[3] == 63) SyncFlashTableBack();
             break;
         case 0x03:    // 擦除页
-            MyFLASH_ErasePage(SerialRecvData[3]);
+            MyFlash_ErasePage(SerialRecvData[3]);
+            break;
+        case 0x04:    // 擦除所有页
+            MyFlash_EraseAllPages();
+            break;
+        case 0x05:    // 写入数据
+            for (i = 0; i < SerialRecvData[6]; i ++)
+            {
+                MyFlash_WriteData_16(MyFlash_GetPageAddress(SerialRecvData[3]) + SerialRecvData[4] * SerialRecvData[5] + i * 2, SerialRecvData[7 + i]);
+            }
+            break;
+        case 0x06:    // 播放
+            if (play_state != 1)
+            {
+                if (current_music == NULL)
+                {
+                    current_music = Music_GetNode(2);
+                }
+                Music_Play();
+            }
+            break;
+        case 0x07:    // 暂停
+            Music_Pause();
+            break;
+        case 0x08:    // 停止
+            Music_Stop();
+            break;
+        case 0x09:    // 设置播放速度
+            play_speed = SerialRecvData[3];
+            break;
+        case 0x0a:    // 设置播放模式
+            play_mode = SerialRecvData[3];
+            break;
+        case 0x0b:    // 设置播放进度
+            play_index = SerialRecvData[3];
+            break;
+        case 0x0c:    // 切换界面
+            PageListIndex = SerialRecvData[3];
+            SetPage(PageList[PageListIndex]);
+            break;
+        case 0x0d:    // 下一首
+            Music_Next();
+            break;
+        case 0x0e:    //消音
+            for (i = 0; i < 8; i ++)
+            {
+                Buzzer_UnPlay(i);
+            }
+            break;
+        case 0x0f:    // 删除对应指定页的音频数据结构体（需要在清除表头数据之前完成这一步）
+            if (FlashTableTemp[16 * SerialRecvData[3]] == 2)
+            {
+                tempm = MusicHead.next;
+
+                while (tempm != &MusicTail)
+                {
+                    if (strcmp(tempm->Name, (char *)(FlashTableTemp + 16 * SerialRecvData[3] + 1)) == 0)
+                    {
+                        Music_ListRemove(tempm);
+                        break;
+                    }
+                    tempm = tempm->next;
+                }
+            }
+            break;
+        case 0x10:    // 添加对应指定页的音频数据结构体（需要在添加表头数据之后完成这一步）
+            if (FlashTableTemp[16 * SerialRecvData[3]] == 2)
+            {
+                Music_Create((char *)(FlashTableTemp + 16 * SerialRecvData[3] + 1), (uint16_t *)MyFlash_GetPageAddress(SerialRecvData[3]), (uint16_t *)(MyFlash_GetPageAddress(SerialRecvData[3]) + 512));
+            }
             break;
         default:
             break;

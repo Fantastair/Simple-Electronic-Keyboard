@@ -11,8 +11,9 @@ typedef struct
     void (*PageButtonUp)(uint8_t);    // 界面按键抬起处理函数指针
 } Page;    // 界面结构体
 
-extern Page WelcomePage, MainPage, AboutPage;
-extern Page *current_page;
+extern Page WelcomePage, MainPage, AboutPage, MusicPlayPage;
+extern Page *current_page, *PageList[];
+extern uint8_t PageListIndex;
 
 void SetPage(Page *page);
 void NextPage(void);

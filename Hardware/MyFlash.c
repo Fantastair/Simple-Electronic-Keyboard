@@ -45,7 +45,7 @@ void MyFlash_EraseAllPages(void)
  * @brief 擦除指定页
  * @param page 页号
  */
-void MyFLASH_ErasePage(uint8_t page)
+void MyFlash_ErasePage(uint8_t page)
 {
     FLASH_Unlock();
     FLASH_ErasePage(MyFlash_GetPageAddress(page));

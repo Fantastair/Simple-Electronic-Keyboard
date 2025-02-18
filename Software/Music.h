@@ -20,27 +20,45 @@ typedef struct _Music
 
 extern Music MusicHead, MusicTail;    // 音频链表头尾
 extern uint8_t *FlashTable, FlashTableTemp[1024];    // 闪存表头指针
+extern Music *current_music;    // 当前播放的音频
+extern uint8_t play_mode;    // 播放模式，0 为播放单曲，1 为单曲循环，2 为列表播放，3 为列表循环，4 为随机播放
+extern uint8_t play_state;    // 播放状态，0 为停止，1 为播放，2 为暂停
+extern uint8_t play_index;    // 播放音符索引
+extern uint32_t play_tick;    // 播放时刻
+extern uint8_t play_speed;    // 播放速度，0 为 0.5x，1 为 1x，2 为 2x
+extern uint16_t record_note_temp[256];    // 音符轨道录音缓冲
+extern uint16_t record_tick_temp[256];    // 时刻轨道录音缓冲
 
-void Music_ListAdd(Music *music);    // 添加音频
-void Music_ListRemove(Music *music);    // 移除音频
-Music * Music_Create(char *Name, uint16_t *Note, uint16_t *Tick);    // 创建音频
-uint8_t Music_Save(char * Name, uint16_t * Note, uint16_t * Tick, uint16_t Length);    // 存储音频数据到闪存
+void Music_ListAdd(Music *music);
+void Music_ListRemove(Music *music);
+Music * Music_Pop(char *Name);
+void Music_Insert(Music *music, Music *after);
+Music * Music_Create(char *Name, uint16_t *Note, uint16_t *Tick);
+uint8_t Music_Save(char * Name, uint16_t * Note, uint16_t * Tick, uint16_t Length);
+void Music_Rename(Music *music, char *Name);
 
 void SyncFlashTable(void);
 void SyncFlashTableBack(void);
 
-void Music_Init(void);    // 初始化音频模块
-void Music_InitFlashTable(void);    // 初始化闪存表头数据
+void Music_Init(void);
+void Music_InitFlashTable(void);
 
-uint32_t Music_GetLength(Music *music);    // 获取音频长度
-uint8_t Music_GetLinkLength(void);    // 获取链表长度
-Music *Music_GetNode(uint8_t index);    // 获取链表节点
+uint32_t Music_GetLength(Music *music);
+uint8_t Music_GetNoteLength(Music *music);
+uint8_t Music_GetLinkLength(void);
+Music *Music_GetNode(uint8_t index);
+Music *Music_Search(char *Name);
+uint8_t Music_GetPage(Music *music);
 
-void Music_Play(Music *music);    // 播放音乐
-void Music_Stop(void);    // 停止音乐
-void Music_Pause(void);    // 暂停音乐
-void Music_Next(void);    // 播放下一首
+void Music_Play(void);
+void Music_Stop(void);
+void Music_Pause(void);
+void Music_Next(void);
 
-void Music_BackupMusic(void);    // 备份音频数据
+void Music_BackupMusic(void);
+
+void Music_InitRecord(void);
+void Music_RecordNote(uint8_t note, uint8_t tick);
+void Music_RecordSave(void);
 
 #endif

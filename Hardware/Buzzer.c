@@ -26,8 +26,8 @@ void Buzzer2_SmoothOff(uint16_t time);
 MyBuzzer Buzzer1 = {Buzzer1_On, Buzzer1_Off, Buzzer1_SetFreq, Buzzer1_SetVolume, Buzzer1_SmoothOff, 0, 100, 1};
 MyBuzzer Buzzer2 = {Buzzer2_On, Buzzer2_Off, Buzzer2_SetFreq, Buzzer2_SetVolume, Buzzer2_SmoothOff, 0, 100, 1};
 
-uint16_t FreqMap[] = {523, 587, 659, 698, 784, 880, 988, 1046};
-uint8_t VolumeMap[] = {0, 1, 3, 6, 10, 15};
+uint16_t FreqMap[] = {261 + 30, 294 + 30, 330 + 30, 349 + 30, 392 + 30, 440 + 30, 494 + 30, 523 + 30};
+uint8_t VolumeMap[] = {0, 1, 2, 3, 5, 8};
 
 void LeftVolumeBar_Ani(uint16_t tick);
 void RightVolumeBar_Ani(uint16_t tick);
@@ -114,6 +114,8 @@ void Buzzer2_SetVolume(uint8_t volume)
     MyPWM_SetCCR(&BUZZER2_TIM, &BUZZER2_CH, volume);
 }
 
+uint8_t SmoothFlag = 1;    // 淡出启用标志，0 为关闭，1 为启用
+
 uint32_t Buzzer1TickTemp;    // 记录帧函数开始的时刻
 uint32_t Buzzer1TotalTemp;    // 记录帧函数持续时刻
 /**
@@ -122,14 +124,14 @@ uint32_t Buzzer1TotalTemp;    // 记录帧函数持续时刻
 void Buzzer1_SmoothOff_TickFunc(uint16_t tick)
 {
     uint32_t t = MyTime_GetTick() - Buzzer1TickTemp;
-    if (t > Buzzer1TotalTemp)
+    if (t <= Buzzer1TotalTemp && SmoothFlag == 1)
     {
-        Buzzer1_Off();
-        StopTickFunc(Buzzer1.smoothoff_tick);
+        MyPWM_SetCCR(&BUZZER1_TIM, &BUZZER1_CH, (uint16_t)(Buzzer1.volume * (1.0 - (float)t / Buzzer1TotalTemp)));
     }
     else
     {
-        MyPWM_SetCCR(&BUZZER1_TIM, &BUZZER1_CH, (uint16_t)(Buzzer1.volume * (1.0 - (float)t / Buzzer1TotalTemp)));
+        Buzzer1_Off();
+        StopTickFunc(Buzzer1.smoothoff_tick);
     }
 }
 
@@ -141,14 +143,14 @@ uint32_t Buzzer2TotalTemp;    // 记录帧函数持续时刻
 void Buzzer2_SmoothOff_TickFunc(uint16_t tick)
 {
     uint32_t t = MyTime_GetTick() - Buzzer2TickTemp;
-    if (t > Buzzer2TotalTemp)
+    if (t <= Buzzer2TotalTemp && SmoothFlag == 1)
     {
-        Buzzer2_Off();
-        StopTickFunc(Buzzer2.smoothoff_tick);
+        MyPWM_SetCCR(&BUZZER2_TIM, &BUZZER2_CH, Buzzer2.volume * (1.0 - (float)t / Buzzer2TotalTemp));
     }
     else
     {
-        MyPWM_SetCCR(&BUZZER2_TIM, &BUZZER2_CH, Buzzer2.volume * (1.0 - (float)t / Buzzer2TotalTemp));
+        Buzzer2_Off();
+        StopTickFunc(Buzzer2.smoothoff_tick);
     }
 }
 
@@ -350,7 +352,7 @@ void Buzzer_UnPlay(uint8_t note)
             MyOLED_Update(46, 1, 17, 3);
         }
         lvba_start = lvba_temp;
-        lvba_total = 24;
+        lvba_total = BUZZERSMOOTHOFFTICK;
         lvba_target = 0;
         LaunchTickFunc(lvba_tf);
         lvba_tick = MyTime_GetTick();
@@ -402,4 +404,20 @@ void RightVolumeBar_Ani(uint16_t tick)
         if (l > 0) MyOLED_Fill_GRAM_Rect(114, 61 - l, 11, l);
         MyOLED_Update(115, 5, 12, 3);
     }
+}
+
+/**
+ * @brief 启用淡出音效
+ */
+void Buzzer_SmoothOn(void)
+{
+    SmoothFlag = 1;
+}
+
+/**
+ * @brief 关闭淡出音效
+ */
+void Buzzer_SmoothOff(void)
+{
+    SmoothFlag = 0;
 }

@@ -18,7 +18,7 @@
 #define BUZZER2_CH MyTIM_CH1
 
 #define BUZZERSMOOTHONTICK 4
-#define BUZZERSMOOTHOFFTICK 24
+#define BUZZERSMOOTHOFFTICK 18
 
 typedef struct
 {
@@ -45,6 +45,7 @@ void Buzzer_LowerVolume(void);
 
 void Buzzer_Play(uint8_t note);
 void Buzzer_UnPlay(uint8_t note);
-
+void Buzzer_SmoothOn(void);
+void Buzzer_SmoothOff(void);
 
 #endif

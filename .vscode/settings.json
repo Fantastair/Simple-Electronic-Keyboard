@@ -9,6 +9,8 @@
         "chinesefont.h": "c",
         "myflash.h": "c",
         "buzzer.h": "c",
-        "mymisc.h": "c"
+        "mymisc.h": "c",
+        "mygpio.h": "c",
+        "music.h": "c"
     }
 }
